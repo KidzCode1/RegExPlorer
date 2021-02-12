@@ -9,13 +9,13 @@
     <StackPanel x:Name="StackPanel1" Orientation="Vertical" >
     	<StackPanel Orientation="Horizontal">
      	<Label Content="RegEx Pattern:"/>
-            <TextBox x:Name="tbxRegExPattern" Margin="0, 4, 0, 0"  MinWidth="420" >
+            <TextBox x:Name="tbxRegExPattern" Margin="0, 4, 0, 0"  MinWidth="420" TextChanged="tbxRegExPattern_TextChanged">
             	
             </TextBox>
      </StackPanel>
     	<StackPanel Orientation="Horizontal">
      	<Label Content="Text to Test:" Margin="32,0,0,0" />
-            <TextBox x:Name="tbxText" Margin="0, 4, 0, 0"  MinWidth="420" >
+            <TextBox x:Name="tbxText" Margin="0, 4, 0, 0"  MinWidth="420" TextChanged="tbxText_TextChanged">
             	
             </TextBox>
      </StackPanel>
