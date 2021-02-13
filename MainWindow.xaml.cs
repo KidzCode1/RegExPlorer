@@ -30,6 +30,11 @@ namespace RegExPlorer
 		string textToMatch;
 		void CheckForMatch()
 		{
+			if (textToMatch == null)
+			{
+				HideBlueCheckRedX();
+				return;
+			}
 			if (regex.IsMatch(textToMatch))
 			{
 				blueCheck.Visibility = Visibility.Visible;
@@ -41,19 +46,36 @@ namespace RegExPlorer
 				redX.Visibility = Visibility.Visible;
 			}
 		}
+
+		void HideBlueCheckRedX()
+		{
+			blueCheck.Visibility = Visibility.Collapsed;
+			redX.Visibility = Visibility.Collapsed;
+		}
+
 		private void tbxRegExPattern_TextChanged(object sender, TextChangedEventArgs e)
 		{
+			string decimalNumber = "[+-]?((\\d+(\\.\\d*)?))";  // This is our best regex for matching a decimal number! 
+																												 // This is our best match for a vector that looks like this: (1, 2, 3) -> (2, 2, 2)
+																												 // ^\s*\(?\s*\d\s*,\s*\d\s*,\s*\d\s*\)?\s*->\s*\(?\s*\d\s*,\s*\d\s*,\s*\d\s*\)?\s*$
+
 			try
 			{
 				regex = new Regex(tbxRegExPattern.Text);
 				CheckForMatch();
-				Title ="RegEx Looks Good!";
+				Title = "RegEx looks good!";
+				iconInvalidRegEx.Visibility = Visibility.Collapsed;
+				tbxRegExPattern.Background = new SolidColorBrush(Colors.White);
 			}
 			catch (Exception ex)
 			{
 				Title = ex.Message;
+				HideBlueCheckRedX();
+				tbxRegExPattern.Background = new SolidColorBrush(Colors.Pink);
+				iconInvalidRegEx.Visibility = Visibility.Visible;
 			}
 		}
+		
 
 		private void tbxText_TextChanged(object sender, TextChangedEventArgs e)
 		{
