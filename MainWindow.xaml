@@ -1,24 +1,31 @@
-﻿<Window x:Class="RegExPlorer.MainWindow"
+﻿<Window x:Class="DeleteRegExDemoPrep.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RegExPlorer"
+        xmlns:local="clr-namespace:DeleteRegExDemoPrep"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" FontSize="28">
-    <StackPanel x:Name="StackPanel1" Orientation="Vertical" >
-    	<StackPanel Orientation="Horizontal">
-     	<Label Content="RegEx Pattern:"/>
-            <TextBox x:Name="tbxRegExPattern" Margin="0, 4, 0, 0"  MinWidth="420" TextChanged="tbxRegExPattern_TextChanged">
-            	
+    <StackPanel x:Name="StackPanel1" Orientation="Vertical">
+        <Menu>
+            <MenuItem Header="Pattern" >
+                <MenuItem Header="Vector Long" Click="VectorLong_Click"/>
+            </MenuItem>
+        </Menu>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="RegEx Pattern:"/>
+            <TextBox x:Name="tbxRegExPattern" Margin="0, 4, 0, 0" MinWidth="420" TextChanged="tbxRegExPattern_TextChanged">
+
             </TextBox>
-     </StackPanel>
-    	<StackPanel Orientation="Horizontal">
-     	<Label Content="Text to Test:" Margin="32,0,0,0" />
-            <TextBox x:Name="tbxText" Margin="0, 4, 0, 0"  MinWidth="420" TextChanged="tbxText_TextChanged">
-            	
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="32,0,0,0">
+            <Label Content="Text to Test:"/>
+            <TextBox x:Name="tbxText" Margin="0, 4, 0, 0" MinWidth="420" TextChanged="tbxText_TextChanged">
             </TextBox>
-     </StackPanel>
+        </StackPanel>
+        <TextBox x:Name="tbxGroupResults" IsReadOnly="True" Margin="8, 20, 8, 8" Padding="8" >
+
+        </TextBox>
         <Viewbox x:Name="redX" Width="100" Visibility="Collapsed">
             <Canvas Width="635" Height="635">
                 <Path Fill="#FFCC0000">
