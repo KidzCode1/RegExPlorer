@@ -47,11 +47,11 @@ namespace DeleteRegExDemoPrep
 					for (int i = 1; i < match.Groups.Count; i++)
 					{
 						string groupName = string.Empty;
-						if (int.TryParse(match.Groups[i].Name, out int result))
+						if (IsGroupNameANumber(match, i))
 							continue;
 						groupName = match.Groups[i].Name;
 
-						if (string.IsNullOrEmpty(match.Groups[i].Value))
+						if (GroupHasNoValue(match, i))
 							continue;
 
 						tbxGroupResults.Text += $"{groupName} = {match.Groups[i]}{Environment.NewLine}";
@@ -65,6 +65,16 @@ namespace DeleteRegExDemoPrep
 			}
 		}
 
+		private static bool GroupHasNoValue(Match match, int i)
+		{
+			return string.IsNullOrEmpty(match.Groups[i].Value);
+		}
+
+		private static bool IsGroupNameANumber(Match match, int i)
+		{
+			return int.TryParse(match.Groups[i].Name, out int result);
+		}
+
 		void HideBlueCheckRedX()
 		{
 			blueCheck.Visibility = Visibility.Collapsed;
@@ -72,6 +82,11 @@ namespace DeleteRegExDemoPrep
 		}
 
 		private void tbxRegExPattern_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			RegularExpressionHasChanged();
+		}
+
+		private void RegularExpressionHasChanged()
 		{
 			try
 			{
@@ -90,11 +105,12 @@ namespace DeleteRegExDemoPrep
 				iconInvalidRegEx.Visibility = Visibility.Visible;
 			}
 		}
+
 		/* We found this expression was great for matching our proposed vector syntax:
-		 
-				^\(?\s*\d\s*,\s*\d\s*,\s*\d\s*\)?$
-		 
-		 */
+
+		^\(?\s*\d\s*,\s*\d\s*,\s*\d\s*\)?$
+
+ */
 		private void tbxText_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			textToMatch = tbxText.Text;
@@ -115,7 +131,7 @@ namespace DeleteRegExDemoPrep
 			return $"(?<{name}>{decimalNumber})";
 		}
 
-		private const string assignment = @"((?<var>\w+)\s*=\s*)?";
+		private const string assignment = @"((?<vectorName>\w+)\s*=\s*)?";
 
 		private void VectorLong_Click(object sender, RoutedEventArgs e)
 		{
