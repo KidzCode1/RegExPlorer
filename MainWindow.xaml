@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeleteRegExDemoPrep"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" FontSize="28">
+        Title="MainWindow" Height="450" Width="800" FontSize="14">
     <StackPanel x:Name="StackPanel1" Orientation="Vertical">
         <Menu>
             <MenuItem Header="Pattern" >
@@ -15,17 +15,21 @@
         <StackPanel Orientation="Horizontal">
             <Label Content="RegEx Pattern:"/>
             <TextBox x:Name="tbxRegExPattern" Margin="0, 4, 0, 0" MinWidth="420" TextChanged="tbxRegExPattern_TextChanged">
-
             </TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="32,0,0,0">
             <Label Content="Text to Test:"/>
-            <TextBox x:Name="tbxText" Margin="0, 4, 0, 0" MinWidth="420" TextChanged="tbxText_TextChanged">
+            <TextBox x:Name="tbxText" Margin="0, 4, 0, 0" MinWidth="420"  TextChanged="tbxText_TextChanged">
             </TextBox>
         </StackPanel>
-        <TextBox x:Name="tbxGroupResults" IsReadOnly="True" Margin="8, 20, 8, 8" Padding="8" >
+        <StackPanel Orientation="Horizontal" Margin="8, 20, 8, 8" >
+            <TextBox x:Name="tbxGroupResults" IsReadOnly="True" Padding="8" >
 
-        </TextBox>
+            </TextBox>
+            <TextBox x:Name="tbxCodeGen" Margin="20, 0, 0, 0" >
+        	    
+            </TextBox>
+        </StackPanel>
         <Viewbox x:Name="redX" Width="100" Visibility="Collapsed">
             <Canvas Width="635" Height="635">
                 <Path Fill="#FFCC0000">

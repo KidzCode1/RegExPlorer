@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RegExPlorer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,12 +24,28 @@ namespace DeleteRegExDemoPrep
 	{
 
 		const string STR_Vector = "%vector%";
+		CodeGenerator godeGenerator = new CodeGenerator();
 		public MainWindow()
 		{
 			InitializeComponent();
+			tbxRegExPattern.Text = @"^((?<vectorName>\w+)\s*=\s*)?(\(?(?<X>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<Y>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<Z>[+-]?((\d+(\.\d+)?)))\s*\)?\s*->)?\s*\(?(?<deltaX>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<deltaY>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<deltaZ>[+-]?((\d+(\.\d+)?)))\s*\)?$";
+			tbxText.Text = "1 2 3";
 		}
+
 		Regex regex;
 		string textToMatch;
+
+
+		string GetTypeString(Match match, int i)
+		{
+			string value = match.Groups[i].Value;
+
+			if (EvalHelper.GetPropertyType(value) == PropertyType.Double)
+				return " (double)";
+
+			return " (string)";
+		}
+
 		void CheckForMatch()
 		{
 			if (textToMatch == null)
@@ -47,15 +64,18 @@ namespace DeleteRegExDemoPrep
 					for (int i = 1; i < match.Groups.Count; i++)
 					{
 						string groupName = string.Empty;
-						if (IsGroupNameANumber(match, i))
+						if (EvalHelper.IsGroupNameANumber(match, i))
 							continue;
 						groupName = match.Groups[i].Name;
 
-						if (GroupHasNoValue(match, i))
+						if (EvalHelper.GroupHasNoValue(match, i))
 							continue;
 
-						tbxGroupResults.Text += $"{groupName} = {match.Groups[i]}{Environment.NewLine}";
+						string type = GetTypeString(match, i);
+
+						tbxGroupResults.Text += $"{groupName} = {match.Groups[i]}{type}{Environment.NewLine}";
 					}
+				tbxCodeGen.Text = godeGenerator.GenerateCode(matches, tbxRegExPattern.Text);
 			}
 			else  // We don't have a match.
 			{
@@ -63,16 +83,6 @@ namespace DeleteRegExDemoPrep
 				blueCheck.Visibility = Visibility.Collapsed;
 				redX.Visibility = Visibility.Visible;
 			}
-		}
-
-		private static bool GroupHasNoValue(Match match, int i)
-		{
-			return string.IsNullOrEmpty(match.Groups[i].Value);
-		}
-
-		private static bool IsGroupNameANumber(Match match, int i)
-		{
-			return int.TryParse(match.Groups[i].Name, out int result);
 		}
 
 		void HideBlueCheckRedX()
@@ -122,7 +132,9 @@ namespace DeleteRegExDemoPrep
 			string numStr = @"[+-]?((\d+(\.\d+)?))";  // This is our best regex for matching a decimal number! 
 																								// This is our best match for a vector that looks like this: (1, 2, 3) -> (2, 2, 2)
 																								// ^\s*\(?\s*\d\s*,\s*\d\s*,\s*\d\s*\)?\s*->\s*\(?\s*\d\s*,\s*\d\s*,\s*\d\s*\)?\s*$
-			string vectorStr = $"\\(?{Group(prefix + "X", numStr)},\\s*{Group(prefix + "Y", numStr)},\\s*{Group(prefix + "Z", numStr)}\\s*\\)?";
+
+			string comma = "[, ]";
+			string vectorStr = $"\\(?{Group(prefix + "X", numStr)}{comma}\\s*{Group(prefix + "Y", numStr)}{comma}\\s*{Group(prefix + "Z", numStr)}\\s*\\)?";
 			return str.Replace(STR_Vector, vectorStr);
 		}
 
