@@ -6,35 +6,19 @@ namespace DeleteRegExDemoPrep
 {
 	public class CodeGenerator
 	{
-		/* public static RegExResult Create(string str)
-		{
-			const string pattern = @"(?<deltaX>\d+), (?<deltaY>\d+), (?<deltaZ>\d+)";  // +
-			RegExResult regExResult = new RegExResult();
+		private const string createBody = @"    RegExResult regExResult = new RegExResult();
 
-			Regex regex = new Regex(pattern);
-			MatchCollection matches = regex.Matches(str);
-
-			regExResult.deltaX = RegexHelper.GetValue<double>(matches, "deltaX");  // +
-			regExResult.deltaY = RegexHelper.GetValue<double>(matches, "deltaY");  // +
-			regExResult.deltaZ = RegexHelper.GetValue<double>(matches, "deltaZ");  // +
-
-			return regExResult;
-		} */
-
-		private const string createBody = @"		RegExResult regExResult = new RegExResult();
-
-		Regex regex = new Regex(pattern);
-		MatchCollection matches = regex.Matches(str);
+    Regex regex = new Regex(pattern);
+    MatchCollection matches = regex.Matches(str);
 
 ";
 
 		private const string createMethodStart = @"
-	public static RegExResult Create(string str)
-	{
+  public static RegExResult Create(string str)
+  {
 ";
 
-		private const string createMethodEnd = @"
-	}
+		private const string createMethodEnd = @"  }
 ";
 
 		private const string classStart = @"public class RegExResult
@@ -47,24 +31,24 @@ namespace DeleteRegExDemoPrep
 
 		private const string HelperMethod = @"public static class RegexHelper
 {
-	public static T GetValue<T>(MatchCollection matches, string groupName)
-	{
-		foreach (Match match in matches)
-			for (int i = 1; i < match.Groups.Count; i++)
-			{
-				if (match.Groups[i].Name == groupName)
-				{
-					string value = match.Groups[i].Value;
+  public static T GetValue<T>(MatchCollection matches, string groupName)
+  {
+    foreach (Match match in matches)
+      for (int i = 1; i < match.Groups.Count; i++)
+      {
+        if (match.Groups[i].Name == groupName)
+        {
+          string value = match.Groups[i].Value;
 
-					if (typeof(T).Name == typeof(double).Name)
-						if (double.TryParse(value, out double result))
-							return (T)(object)result;
+          if (typeof(T).Name == typeof(double).Name)
+            if (double.TryParse(value, out double result))
+              return (T)(object)result;
 
-					return (T)(object)value;
-				}
-			}
-		return default(T);
-	}
+          return (T)(object)value;
+        }
+      }
+    return default(T);
+  }
 }";
 
 		public CodeGenerator()
@@ -72,14 +56,21 @@ namespace DeleteRegExDemoPrep
 
 		}
 
-		public string GenerateCode(MatchCollection matches, string pattern)
+		public string GenerateCode(MatchCollection matches, string pattern, string className)
 		{
 			string result = "";
-			result += classStart;
+			if (string.IsNullOrWhiteSpace(className) || className.Length <= 1)
+				className = "MyClass";
+			className = className.Replace(' ', '_');
+			string instanceName = char.ToLower(className[0]) + className.Substring(1);
+			if (!char.IsUpper(className[0]))
+				className = char.ToUpper(className[0]) + className.Substring(1);
+
+			result += classStart.Replace("RegExResult", className);
 			result = AddProperties(matches, result);
-			result += createMethodStart;
-			result += $"\t\tconst string pattern = @\"{pattern}\";{Environment.NewLine}";
-			result += createBody;
+			result += createMethodStart.Replace("RegExResult", className); ;
+			result += $"    const string pattern = @\"{pattern}\";{Environment.NewLine}";
+			result += createBody.Replace("RegExResult", className).Replace("regExResult", instanceName);
 			result = AddInitialization(matches, result);
 			result += createMethodEnd;
 			result += classEnd;
@@ -102,7 +93,7 @@ namespace DeleteRegExDemoPrep
 
 					PropertyType type = EvalHelper.GetPropertyType(match.Groups[i].Value);
 					string typeStr = EvalHelper.GetPropertyTypeStr(type);
-					result += $"\tpublic {typeStr} {groupName} " + "{ get; set; }" + Environment.NewLine;
+					result += $"  public {typeStr} {groupName} " + "{ get; set; }" + Environment.NewLine;
 				}
 
 			return result;
@@ -123,7 +114,7 @@ namespace DeleteRegExDemoPrep
 
 					PropertyType type = EvalHelper.GetPropertyType(match.Groups[i].Value);
 					string typeStr = EvalHelper.GetPropertyTypeStr(type);
-					result += $"\t\trexExResult.{groupName} = RegexHelper.GetValue<{typeStr}>(matches, \"{groupName}\");" + Environment.NewLine;
+					result += $"    rexExResult.{groupName} = RegexHelper.GetValue<{typeStr}>(matches, \"{groupName}\");" + Environment.NewLine;
 				}
 
 			return result;

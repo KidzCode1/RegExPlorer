@@ -29,7 +29,8 @@ namespace DeleteRegExDemoPrep
 		{
 			InitializeComponent();
 			tbxRegExPattern.Text = @"^((?<vectorName>\w+)\s*=\s*)?(\(?(?<X>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<Y>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<Z>[+-]?((\d+(\.\d+)?)))\s*\)?\s*->)?\s*\(?(?<deltaX>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<deltaY>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<deltaZ>[+-]?((\d+(\.\d+)?)))\s*\)?$";
-			tbxText.Text = "1 2 3";
+			tbxText.Text = "a = (1, 2, 3) -> (2, 2, 2)";
+			tbxClassName.Text = "MyClass";
 		}
 
 		Regex regex;
@@ -71,11 +72,13 @@ namespace DeleteRegExDemoPrep
 						if (EvalHelper.GroupHasNoValue(match, i))
 							continue;
 
-						string type = GetTypeString(match, i);
-
-						tbxGroupResults.Text += $"{groupName} = {match.Groups[i]}{type}{Environment.NewLine}";
+						string type = "";  // GetTypeString(match, i);
+						string value = match.Groups[i].Value;
+						if (EvalHelper.GetPropertyType(value) == PropertyType.String)
+							value = $"\"{value}\"";
+						tbxGroupResults.Text += $"{groupName} = {value}{type}{Environment.NewLine}";
 					}
-				tbxCodeGen.Text = godeGenerator.GenerateCode(matches, tbxRegExPattern.Text);
+				tbxCodeGen.Text = godeGenerator.GenerateCode(matches, tbxRegExPattern.Text, tbxClassName.Text);
 			}
 			else  // We don't have a match.
 			{
@@ -148,6 +151,11 @@ namespace DeleteRegExDemoPrep
 		private void VectorLong_Click(object sender, RoutedEventArgs e)
 		{
 			tbxRegExPattern.Text = $"^{assignment}({MakeVector(STR_Vector)}\\s*->)?\\s*{MakeVector(STR_Vector, "delta")}$";
+		}
+
+		private void tbxClassName_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			CheckForMatch();
 		}
 	}
 }
