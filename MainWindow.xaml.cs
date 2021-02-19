@@ -78,7 +78,7 @@ namespace DeleteRegExDemoPrep
 							value = $"\"{value}\"";
 						tbxGroupResults.Text += $"{groupName} = {value}{type}{Environment.NewLine}";
 					}
-				tbxCodeGen.Text = godeGenerator.GenerateCode(matches, tbxRegExPattern.Text, tbxClassName.Text);
+				tbxCodeGen.Text = godeGenerator.GenerateCode(matches, tbxRegExPattern.Text, tbxClassName.Text, tbxText.Text);
 			}
 			else  // We don't have a match.
 			{

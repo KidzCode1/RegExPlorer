@@ -56,26 +56,40 @@ namespace DeleteRegExDemoPrep
 
 		}
 
-		public string GenerateCode(MatchCollection matches, string pattern, string className)
+		public string GenerateCode(MatchCollection matches, string pattern, string className, string sampleText)
 		{
 			string result = "";
+			string instanceName = GetInstanceName(ref className);
+
+			result += classStart.Replace("RegExResult", className);
+			result = AddProperties(matches, result);
+			result = AddCreateMethod(matches, pattern, className, result, instanceName);
+			result += classEnd;
+			result += "// Sample usage: " + Environment.NewLine;
+			result += $"// {className} {instanceName} = {className}.Create(\"{sampleText}\");" + Environment.NewLine + Environment.NewLine;
+			result += HelperMethod;
+			return result;
+		}
+
+		private static string AddCreateMethod(MatchCollection matches, string pattern, string className, string result, string instanceName)
+		{
+			result += createMethodStart.Replace("RegExResult", className); ;
+			result += $"    const string pattern = @\"{pattern}\";{Environment.NewLine}";
+			result += createBody.Replace("RegExResult", className).Replace("regExResult", instanceName);
+			result = AddInitialization(matches, result);
+			result += createMethodEnd;
+			return result;
+		}
+
+		private static string GetInstanceName(ref string className)
+		{
 			if (string.IsNullOrWhiteSpace(className) || className.Length <= 1)
 				className = "MyClass";
 			className = className.Replace(' ', '_');
 			string instanceName = char.ToLower(className[0]) + className.Substring(1);
 			if (!char.IsUpper(className[0]))
 				className = char.ToUpper(className[0]) + className.Substring(1);
-
-			result += classStart.Replace("RegExResult", className);
-			result = AddProperties(matches, result);
-			result += createMethodStart.Replace("RegExResult", className); ;
-			result += $"    const string pattern = @\"{pattern}\";{Environment.NewLine}";
-			result += createBody.Replace("RegExResult", className).Replace("regExResult", instanceName);
-			result = AddInitialization(matches, result);
-			result += createMethodEnd;
-			result += classEnd;
-			result += HelperMethod;
-			return result;
+			return instanceName;
 		}
 
 		private static string AddProperties(MatchCollection matches, string result)
