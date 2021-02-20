@@ -157,5 +157,10 @@ namespace DeleteRegExDemoPrep
 		{
 			CheckForMatch();
 		}
+
+		private void btnCopy_Click(object sender, RoutedEventArgs e)
+		{
+			Clipboard.SetText(tbxCodeGen.Text);
+		}
 	}
 }

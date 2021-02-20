@@ -6,15 +6,22 @@ namespace DeleteRegExDemoPrep
 {
 	public class CodeGenerator
 	{
-		private const string createBody = @"    RegExResult regExResult = new RegExResult();
-
+		private const string createBody = @"
     Regex regex = new Regex(pattern);
-    MatchCollection matches = regex.Matches(str);
+    MatchCollection matches = regex.Matches(input);
+    if (matches.Count == 0)
+      return null;
 
+    RegExResult regExResult = new RegExResult();
 ";
 
 		private const string createMethodStart = @"
-  public static RegExResult Create(string str)
+  /// <summary>
+  /// Creates a new RegExResult based on the specified input text.
+  /// </summary>
+  /// <param name=""input"">The input text to get a match for. For example, ""#SampleInput#"".</param>
+  /// <returns>Returns the new RegExResult, or null if a no matches were found for the specified input.</returns>
+  public static RegExResult Create(string input)
   {
 ";
 
@@ -63,7 +70,7 @@ namespace DeleteRegExDemoPrep
 
 			result += classStart.Replace("RegExResult", className);
 			result = AddProperties(matches, result);
-			result = AddCreateMethod(matches, pattern, className, result, instanceName);
+			result = AddCreateMethod(matches, pattern, className, result, instanceName, sampleText);
 			result += classEnd;
 			result += "// Sample usage: " + Environment.NewLine;
 			result += $"// {className} {instanceName} = {className}.Create(\"{sampleText}\");" + Environment.NewLine + Environment.NewLine;
@@ -71,9 +78,10 @@ namespace DeleteRegExDemoPrep
 			return result;
 		}
 
-		private static string AddCreateMethod(MatchCollection matches, string pattern, string className, string result, string instanceName)
+		private static string AddCreateMethod(MatchCollection matches, string pattern, string className, string result, string instanceName, string sampleText)
 		{
-			result += createMethodStart.Replace("RegExResult", className); ;
+			
+			result += createMethodStart.Replace("RegExResult", className).Replace("#SampleInput#", sampleText);
 			result += $"    const string pattern = @\"{pattern}\";{Environment.NewLine}";
 			result += createBody.Replace("RegExResult", className).Replace("regExResult", instanceName);
 			result = AddInitialization(matches, result);

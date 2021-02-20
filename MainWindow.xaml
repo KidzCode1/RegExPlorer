@@ -89,9 +89,33 @@
                 <TextBox x:Name="tbxGroupResults" IsReadOnly="True" Margin="0, 5, 0, 0" Padding="8" >
 
                 </TextBox>
+                <Button x:Name="btnCopy" Height="105" Width="107" Padding="10" Click="btnCopy_Click" Margin="12" >
+                    <Viewbox>
+                        <Canvas Width="3130" Height="3847">
+                            <Polygon Points="0.5,0.5 1876.25,0.5 2268.5,385 2268.5,648.625 2221.875,648.625 2221.875,631.25 781.125,631.25 781.125,3081.625 790.125,3081.625 790.125,3126.5 0.5,3126.5" FillRule="EvenOdd" Fill="#FF6D91D1" Stroke="{x:Null}" />
+                            <Polygon Points="46.5,45.5 1857.125,45.5 2223.5,411.875 2223.5,652.75 790.625,652.75 790.625,3084.5 46.5,3084.5" FillRule="EvenOdd" Fill="#FFFFFFFF" Stroke="{x:Null}" />
+                            <Polygon Points="1847.5,15.5 1892,60 1892,390.5 1892,390.5 1892,390.5 2222.5,390.5 2270.5,438.5 1847.5,438.5" FillRule="EvenOdd" Fill="#FF6D91D1" Stroke="{x:Null}" />
+                            <Path Fill="#FFB4C7E7" Stroke="{x:Null}">
+                                <Path.Data>
+                                    <PathGeometry Figures="M275.5,2579.5L790.125,2579.5 790.125,2704.5 275.5,2704.5 275.5,2579.5z M275.5,2151.125L790.125,2151.125 790.125,2276.125 275.5,2276.125 275.5,2151.125z M275.5,1722.75L790.125,1722.75 790.125,1847.75 275.5,1847.75 275.5,1722.75z M275.5,1294.375L790.125,1294.375 790.125,1419.375 275.5,1419.375 275.5,1294.375z M275.5,866L790.125,866 790.125,991 275.5,991 275.5,866z M275.5,437.5L1305.5,437.5 1305.5,562.5 275.5,562.5 275.5,437.5z" />
+                                </Path.Data>
+                            </Path>
+                            <Polygon Points="859.5,720.5 2735.25,720.5 3127.5,1105 3127.5,3846.5 859.5,3846.5" FillRule="EvenOdd" Fill="#FF4472C4" Stroke="{x:Null}" />
+                            <Polygon Points="905.5,761.5 2716.125,761.5 3082.5,1127.875 3082.5,3800.5 905.5,3800.5" FillRule="EvenOdd" Fill="#FFFFFFFF" Stroke="{x:Null}" />
+                            <Polygon Points="2706.5,735.5 2751,780 2751,1110.5 2751,1110.5 2751,1110.5 3081.5,1110.5 3129.5,1158.5 2706.5,1158.5" FillRule="EvenOdd" Fill="#FF6D91D1" Stroke="{x:Null}" />
+                            <Path Fill="#FFB4C7E7" Stroke="{x:Null}">
+                                <Path.Data>
+                                    <PathGeometry Figures="M1134.5,3299.5L2852.5,3299.5 2852.5,3424.5 1134.5,3424.5 1134.5,3299.5z M1134.5,2871.125L2852.5,2871.125 2852.5,2996.125 1134.5,2996.125 1134.5,2871.125z M1134.5,2442.75L2852.5,2442.75 2852.5,2567.75 1134.5,2567.75 1134.5,2442.75z M1134.5,2014.375L2852.5,2014.375 2852.5,2139.375 1134.5,2139.375 1134.5,2014.375z M1134.5,1586L2852.5,1586 2852.5,1711 1134.5,1711 1134.5,1586z M1134.5,1157.5L2164.5,1157.5 2164.5,1282.5 1134.5,1282.5 1134.5,1157.5z" />
+                                </Path.Data>
+                            </Path>
+                        </Canvas>
+                    </Viewbox>
+                </Button>
             </StackPanel>
             <StackPanel Orientation="Vertical" Margin="20, 0, 0, 0" >
-                <TextBlock Text="Generated Code:" Width="Auto" Height="Auto"/>
+                <TextBlock Width="Auto" Height="Auto">
+                    Generated Code:
+                </TextBlock>
                 <TextBox x:Name="tbxCodeGen" FontFamily="Consolas" Margin="0, 5, 0, 0" Padding="8" Width="1700" Height="850" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 
                 </TextBox>

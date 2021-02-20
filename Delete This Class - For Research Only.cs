@@ -34,17 +34,24 @@ namespace RegExPlorer
 		public double deltaY { get; set; }  // +
 		public double deltaZ { get; set; }  // +
 
-		public static RegExResult Create(string str)
+		/// <summary>
+		/// Creates a new RegExResult based on the specified input text.
+		/// </summary>
+		/// <param name="input">The input text to get a match for. For example, "#SampleInput#".</param>
+		/// <returns>Returns the new RegExResult, or null if a no matches were found for the specified input.</returns>
+		public static RegExResult Create(string input)
 		{
-			const string pattern = @"(?<deltaX>\d+), (?<deltaY>\d+), (?<deltaZ>\d+)";  // +
-			RegExResult regExResult = new RegExResult();
+			const string pattern = @"(?<deltaX>\d+), (?<deltaY>\d+), (?<deltaZ>\d+)";
 
 			Regex regex = new Regex(pattern);
-			MatchCollection matches = regex.Matches(str);
+			MatchCollection matches = regex.Matches(input);
+			if (matches.Count == 0)
+				return null;
 
-			regExResult.deltaX = RegexHelper.GetValue<double>(matches, "deltaX");  // +
-			regExResult.deltaY = RegexHelper.GetValue<double>(matches, "deltaY");  // +
-			regExResult.deltaZ = RegexHelper.GetValue<double>(matches, "deltaZ");  // +
+			RegExResult regExResult = new RegExResult();
+			regExResult.deltaX = RegexHelper.GetValue<double>(matches, "deltaX");
+			regExResult.deltaY = RegexHelper.GetValue<double>(matches, "deltaY");
+			regExResult.deltaZ = RegexHelper.GetValue<double>(matches, "deltaZ");
 
 			return regExResult;
 		}
