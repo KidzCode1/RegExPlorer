@@ -161,6 +161,7 @@ namespace DeleteRegExDemoPrep
 		private void btnCopy_Click(object sender, RoutedEventArgs e)
 		{
 			Clipboard.SetText(tbxCodeGen.Text);
+			MessageBox.Show("Copied", "Good Luck!");
 		}
 	}
 }

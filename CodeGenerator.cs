@@ -40,21 +40,26 @@ namespace DeleteRegExDemoPrep
 {
   public static T GetValue<T>(MatchCollection matches, string groupName)
   {
-    foreach (Match match in matches)
-      for (int i = 1; i < match.Groups.Count; i++)
-      {
-        if (match.Groups[i].Name == groupName)
-        {
-          string value = match.Groups[i].Value;
+		foreach (Match match in matches)
+		{
+      GroupCollection groups = match.Groups;
+			Group group = groups[groupName];
+      if (group == null)
+				continue;
 
-          if (typeof(T).Name == typeof(double).Name)
-            if (double.TryParse(value, out double result))
-              return (T)(object)result;
+			string value = group.Value;
+      
+      if (string.IsNullOrEmpty(value))
+				return default(T);
 
-          return (T)(object)value;
-        }
-      }
-    return default(T);
+      if (typeof(T).Name == typeof(double).Name)
+        if (double.TryParse(value, out double result))
+          return (T)(object)result;
+
+      return (T)(object)value;
+		}
+
+		return default(T);
   }
 }";
 
@@ -84,7 +89,8 @@ namespace DeleteRegExDemoPrep
 			result += createMethodStart.Replace("RegExResult", className).Replace("#SampleInput#", sampleText);
 			result += $"    const string pattern = @\"{pattern}\";{Environment.NewLine}";
 			result += createBody.Replace("RegExResult", className).Replace("regExResult", instanceName);
-			result = AddInitialization(matches, result);
+			result = AddInitialization(matches, result, instanceName);
+			result += $"    return {instanceName};";
 			result += createMethodEnd;
 			return result;
 		}
@@ -121,7 +127,7 @@ namespace DeleteRegExDemoPrep
 			return result;
 		}
 
-		private static string AddInitialization(MatchCollection matches, string result)
+		private static string AddInitialization(MatchCollection matches, string result, string instanceName)
 		{
 			foreach (Match match in matches)
 				for (int i = 1; i < match.Groups.Count; i++)
@@ -136,7 +142,7 @@ namespace DeleteRegExDemoPrep
 
 					PropertyType type = EvalHelper.GetPropertyType(match.Groups[i].Value);
 					string typeStr = EvalHelper.GetPropertyTypeStr(type);
-					result += $"    rexExResult.{groupName} = RegexHelper.GetValue<{typeStr}>(matches, \"{groupName}\");" + Environment.NewLine;
+					result += $"    {instanceName}.{groupName} = RegexHelper.GetValue<{typeStr}>(matches, \"{groupName}\");" + Environment.NewLine;
 				}
 
 			return result;
