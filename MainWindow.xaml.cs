@@ -150,7 +150,7 @@ namespace DeleteRegExDemoPrep
 
 		private void VectorLong_Click(object sender, RoutedEventArgs e)
 		{
-			tbxRegExPattern.Text = $"^{assignment}({MakeVector(STR_Vector)}\\s*->)?\\s*{MakeVector(STR_Vector, "delta")}$";
+			tbxRegExPattern.Text = $"^{assignment}({MakeVector(STR_Vector, "tail")}\\s*->)?\\s*{MakeVector(STR_Vector)}$";
 		}
 
 		private void tbxClassName_TextChanged(object sender, TextChangedEventArgs e)
