@@ -68,7 +68,7 @@ namespace DeleteRegExDemoPrep
 
 		}
 
-		public string GenerateCode(MatchCollection matches, string pattern, string className, string sampleText)
+		public string GenerateCode(MatchCollection matches, string pattern, string className, string sampleText, bool includeRegExHelper)
 		{
 			string result = "";
 			string instanceName = GetInstanceName(ref className);
@@ -79,7 +79,8 @@ namespace DeleteRegExDemoPrep
 			result += classEnd;
 			result += "// Sample usage: " + Environment.NewLine;
 			result += $"// {className} {instanceName} = {className}.Create(\"{sampleText}\");" + Environment.NewLine + Environment.NewLine;
-			result += HelperMethod;
+			if (includeRegExHelper)
+				result += HelperMethod;
 			return result;
 		}
 

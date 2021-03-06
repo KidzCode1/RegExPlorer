@@ -111,6 +111,10 @@
                         </Canvas>
                     </Viewbox>
                 </Button>
+                <CheckBox x:Name="ckIncludeRegExHelper" Checked="ckIncludeRegExHelper_Checked" Unchecked="ckIncludeRegExHelper_Unchecked">
+                    Include
+                    RegxExHelper
+                </CheckBox>
             </StackPanel>
             <StackPanel Orientation="Vertical" Margin="20, 0, 0, 0" >
                 <TextBlock Width="Auto" Height="Auto">

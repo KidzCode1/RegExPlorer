@@ -28,6 +28,7 @@ namespace DeleteRegExDemoPrep
 		public MainWindow()
 		{
 			InitializeComponent();
+			ckIncludeRegExHelper.IsChecked = true;
 			tbxRegExPattern.Text = @"^((?<vectorName>\w+)\s*=\s*)?(\(?(?<X>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<Y>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<Z>[+-]?((\d+(\.\d+)?)))\s*\)?\s*->)?\s*\(?(?<deltaX>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<deltaY>[+-]?((\d+(\.\d+)?)))[, ]\s*(?<deltaZ>[+-]?((\d+(\.\d+)?)))\s*\)?$";
 			tbxText.Text = "a = (1, 2, 3) -> (2, 2, 2)";
 			tbxClassName.Text = "MyClass";
@@ -47,7 +48,7 @@ namespace DeleteRegExDemoPrep
 			return " (string)";
 		}
 
-		void CheckForMatch()
+		void GenerateCode()
 		{
 			if (textToMatch == null)
 			{
@@ -78,7 +79,7 @@ namespace DeleteRegExDemoPrep
 							value = $"\"{value}\"";
 						tbxGroupResults.Text += $"{groupName} = {value}{type}{Environment.NewLine}";
 					}
-				tbxCodeGen.Text = godeGenerator.GenerateCode(matches, tbxRegExPattern.Text, tbxClassName.Text, tbxText.Text);
+				tbxCodeGen.Text = godeGenerator.GenerateCode(matches, tbxRegExPattern.Text, tbxClassName.Text, tbxText.Text, includeRegExHelper);
 			}
 			else  // We don't have a match.
 			{
@@ -104,7 +105,7 @@ namespace DeleteRegExDemoPrep
 			try
 			{
 				regex = new Regex(tbxRegExPattern.Text);
-				CheckForMatch();
+				GenerateCode();
 				Title = "RegEx looks good!";
 				iconInvalidRegEx.Visibility = Visibility.Collapsed;
 				tbxRegExPattern.Background = new SolidColorBrush(Colors.White);
@@ -127,7 +128,7 @@ namespace DeleteRegExDemoPrep
 		private void tbxText_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			textToMatch = tbxText.Text;
-			CheckForMatch();
+			GenerateCode();
 		}
 
 		string MakeVector(string str, string prefix = "")
@@ -155,13 +156,26 @@ namespace DeleteRegExDemoPrep
 
 		private void tbxClassName_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			CheckForMatch();
+			GenerateCode();
 		}
 
 		private void btnCopy_Click(object sender, RoutedEventArgs e)
 		{
 			Clipboard.SetText(tbxCodeGen.Text);
 			MessageBox.Show("Copied", "Good Luck!");
+		}
+
+		bool includeRegExHelper = true;
+		private void ckIncludeRegExHelper_Checked(object sender, RoutedEventArgs e)
+		{
+			includeRegExHelper = ckIncludeRegExHelper.IsChecked == true;
+			GenerateCode();
+		}
+
+		private void ckIncludeRegExHelper_Unchecked(object sender, RoutedEventArgs e)
+		{
+			includeRegExHelper = ckIncludeRegExHelper.IsChecked == true;
+			GenerateCode();
 		}
 	}
 }
