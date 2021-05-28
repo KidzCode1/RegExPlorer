@@ -38,29 +38,29 @@ namespace DeleteRegExDemoPrep
 
 		private const string HelperMethod = @"public static class RegexHelper
 {
-  public static T GetValue<T>(MatchCollection matches, string groupName)
-  {
-		foreach (Match match in matches)
+  		public static T GetValue<T>(MatchCollection matches, string groupName, T defaultValueIfNotFound = default(T))
 		{
-      GroupCollection groups = match.Groups;
-			Group group = groups[groupName];
-      if (group == null)
-				continue;
+			foreach (Match match in matches)
+			{
+				GroupCollection groups = match.Groups;
+				Group group = groups[groupName];
+				if (group == null)
+					continue;
 
-			string value = group.Value;
-      
-      if (string.IsNullOrEmpty(value))
-				return default(T);
+				string value = group.Value;
 
-      if (typeof(T).Name == typeof(double).Name)
-        if (double.TryParse(value, out double result))
-          return (T)(object)result;
+				if (string.IsNullOrEmpty(value))
+					return defaultValueIfNotFound;
 
-      return (T)(object)value;
+				if (typeof(T).Name == typeof(double).Name)
+					if (double.TryParse(value, out double result))
+						return (T)(object)result;
+
+				return (T)(object)value;
+			}
+
+			return defaultValueIfNotFound;
 		}
-
-		return default(T);
-  }
 }";
 
 		public CodeGenerator()
