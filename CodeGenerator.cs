@@ -4,28 +4,39 @@ using System.Text.RegularExpressions;
 
 namespace DeleteRegExDemoPrep
 {
-	public class CodeGenerator
+    public class CodeGenerator
 	{
-		private const string createBody = @"
+        private const string getMatchesStart = @"
+  /// <summary>
+  /// Collects regular expression matches for the specified input text.
+  /// </summary>
+  /// <param name=""input"">The input text to get a match for. For example, #SampleInput#.</param>
+  public static MatchCollection GetMatches(string input)
+  {
+";
+        private const string getMatchesBody = @"
     Regex regex = new Regex(pattern);
-    MatchCollection matches = regex.Matches(input);
-    if (matches.Count == 0)
-      return null;
-
-    RegExResult regExResult = new RegExResult();
+    return regex.Matches(input);
+  }
 ";
 
 		private const string createMethodStart = @"
   /// <summary>
   /// Creates a new RegExResult based on the specified input text.
   /// </summary>
-  /// <param name=""input"">The input text to get a match for. For example, ""#SampleInput#"".</param>
-  /// <returns>Returns the new RegExResult, or null if a no matches were found for the specified input.</returns>
+  /// <param name=""input"">The input text to get a match for. For example, #SampleInput#.</param>
+  /// <returns>Returns the new RegExResult, or null if no matches were found for the specified input.</returns>
   public static RegExResult Create(string input)
   {
+    MatchCollection matches = GetMatches(input);
+    if (matches.Count == 0)
+      return null;
+
+    RegExResult regExResult = new RegExResult();
 ";
 
-		private const string createMethodEnd = @"  }
+		private const string createMethodEnd = @"
+  }
 ";
 
 		private const string classStart = @"public class RegExResult
@@ -36,31 +47,31 @@ namespace DeleteRegExDemoPrep
 
 ";
 
-		private const string HelperMethod = @"public static class RegexHelper
+        private const string HelperMethod = @"public static class RegexHelper
 {
-  		public static T GetValue<T>(MatchCollection matches, string groupName, T defaultValueIfNotFound = default(T))
-		{
-			foreach (Match match in matches)
-			{
-				GroupCollection groups = match.Groups;
-				Group group = groups[groupName];
-				if (group == null)
-					continue;
+  public static T GetValue<T>(MatchCollection matches, string groupName, T defaultValueIfNotFound = default(T))
+  {
+    foreach (Match match in matches)
+    {
+      GroupCollection groups = match.Groups;
+      Group group = groups[groupName];
+      if (group == null)
+        continue;
 
-				string value = group.Value;
+      string value = group.Value;
 
-				if (string.IsNullOrEmpty(value))
-					return defaultValueIfNotFound;
+      if (string.IsNullOrEmpty(value))
+        return defaultValueIfNotFound;
 
-				if (typeof(T).Name == typeof(double).Name)
-					if (double.TryParse(value, out double result))
-						return (T)(object)result;
+      if (typeof(T).Name == typeof(double).Name)
+        if (double.TryParse(value, out double result))
+          return (T)(object)result;
 
-				return (T)(object)value;
-			}
+      return (T)(object)value;
+    }
 
-			return defaultValueIfNotFound;
-		}
+    return defaultValueIfNotFound;
+  }
 }";
 
 		public CodeGenerator()
@@ -75,22 +86,31 @@ namespace DeleteRegExDemoPrep
 
 			result += classStart.Replace("RegExResult", className);
 			result = AddProperties(matches, result);
-			result = AddCreateMethod(matches, pattern, className, result, instanceName, sampleText);
+			result = AddGetMatchesAndCreateMethods(matches, pattern, className, result, instanceName, sampleText);
 			result += classEnd;
 			result += "// Sample usage: " + Environment.NewLine;
-			result += $"// {className} {instanceName} = {className}.Create(\"{sampleText}\");" + Environment.NewLine + Environment.NewLine;
+			result += $"// {className} {instanceName} = {className}.Create(\"{sampleText.Replace("\"", "\\\"")}\");" + Environment.NewLine + Environment.NewLine;
 			if (includeRegExHelper)
 				result += HelperMethod;
 			return result;
 		}
 
-		private static string AddCreateMethod(MatchCollection matches, string pattern, string className, string result, string instanceName, string sampleText)
+        static string FormatForXmlDocComment(string sampleText)
+        {
+            string converted = sampleText.Replace("<", "&lt;").Replace(">", "&gt;");
+            if (converted.IndexOf('"') < 0)
+                return $"\"{converted}\"";
+            if (converted.IndexOf("'") < 0)
+                return $"'{converted}'";
+            return converted;
+        }
+        private static string AddGetMatchesAndCreateMethods(MatchCollection matches, string pattern, string className, string result, string instanceName, string sampleText)
 		{
-			
-			result += createMethodStart.Replace("RegExResult", className).Replace("#SampleInput#", sampleText);
-			result += $"    const string pattern = @\"{pattern}\";{Environment.NewLine}";
-			result += createBody.Replace("RegExResult", className).Replace("regExResult", instanceName);
-			result = AddInitialization(matches, result, instanceName);
+            result += getMatchesStart.Replace("#SampleInput#", FormatForXmlDocComment(sampleText));
+            result += $"    const string pattern = @\"{pattern.Replace("\"", "\"\"")}\";{Environment.NewLine}";
+            result += getMatchesBody;
+            result += createMethodStart.Replace("RegExResult", className).Replace("regExResult", instanceName).Replace("#SampleInput#", FormatForXmlDocComment(sampleText));
+            result = AddInitialization(matches, result, instanceName);
 			result += $"    return {instanceName};";
 			result += createMethodEnd;
 			return result;

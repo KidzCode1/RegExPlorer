@@ -38,7 +38,7 @@ namespace RegExPlorer
 		/// Creates a new RegExResult based on the specified input text.
 		/// </summary>
 		/// <param name="input">The input text to get a match for. For example, "#SampleInput#".</param>
-		/// <returns>Returns the new RegExResult, or null if a no matches were found for the specified input.</returns>
+		/// <returns>Returns the new RegExResult, or null if no matches were found for the specified input.</returns>
 		public static RegExResult Create(string input)
 		{
 			const string pattern = @"(?<deltaX>\d+), (?<deltaY>\d+), (?<deltaZ>\d+)";
