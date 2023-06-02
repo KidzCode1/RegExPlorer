@@ -26,7 +26,7 @@ namespace DeleteRegExDemoPrep
   /// </summary>
   /// <param name=""input"">The input text to get a match for. For example, #SampleInput#.</param>
   /// <returns>Returns the new RegExResult, or null if no matches were found for the specified input.</returns>
-  public static RegExResult Create(string input)
+  public static RegExResult? Create(string input)
   {
     MatchCollection matches = GetMatches(input);
     if (matches.Count == 0)
@@ -142,7 +142,7 @@ namespace DeleteRegExDemoPrep
 
 					PropertyType type = EvalHelper.GetPropertyType(match.Groups[i].Value);
 					string typeStr = EvalHelper.GetPropertyTypeStr(type);
-					result += $"  public {typeStr} {groupName} " + "{ get; set; }" + Environment.NewLine;
+					result += $"  public {typeStr}? {groupName} " + "{ get; set; }" + Environment.NewLine;
 				}
 
 			return result;
