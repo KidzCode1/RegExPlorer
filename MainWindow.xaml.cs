@@ -56,13 +56,16 @@ namespace DeleteRegExDemoPrep
 				tbxGroupResults.Text = "";
 				return;
 			}
-			if (regex.IsMatch(textToMatch))
+
+            if (regex.IsMatch(textToMatch))
 			{
 				blueCheck.Visibility = Visibility.Visible;
 				redX.Visibility = Visibility.Collapsed;
-				MatchCollection matches = regex.Matches(textToMatch);
+                
+                MatchCollection matches = regex.Matches(textToMatch);
 				tbxGroupResults.Text = "";
-				foreach (Match match in matches)
+
+                foreach (Match match in matches)
 					for (int i = 1; i < match.Groups.Count; i++)
 					{
 						string groupName = string.Empty;
@@ -70,7 +73,7 @@ namespace DeleteRegExDemoPrep
 							continue;
 						groupName = match.Groups[i].Name;
 
-						if (EvalHelper.GroupHasNoValue(match, i))
+                        if (EvalHelper.GroupHasNoValue(match, i))
 							continue;
 
 						string type = "";  // GetTypeString(match, i);
@@ -104,7 +107,11 @@ namespace DeleteRegExDemoPrep
 		{
 			try
 			{
-				regex = new Regex(tbxRegExPattern.Text);
+                bool multiLineMode = tbxText.Text.Contains("\n");
+                RegexOptions regexOptions = RegexOptions.None;
+                if (multiLineMode)
+                    regexOptions |= RegexOptions.Multiline;
+                regex = new Regex(tbxRegExPattern.Text, regexOptions);
 				GenerateCode();
 				Title = "RegEx looks good!";
 				iconInvalidRegEx.Visibility = Visibility.Collapsed;

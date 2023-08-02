@@ -19,7 +19,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="19,0,0,0">
             <Label Content="Text to Test:"/>
-            <TextBox x:Name="tbxText" Margin="0, 4, 0, 0" MinWidth="420"  TextChanged="tbxText_TextChanged">
+            <TextBox x:Name="tbxText" AcceptsReturn="True" Margin="0, 4, 0, 0" MinWidth="420"  Width="899" TextChanged="tbxText_TextChanged">
             </TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="16,0,0,0">

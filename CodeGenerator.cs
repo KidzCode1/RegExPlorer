@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -129,7 +130,9 @@ namespace DeleteRegExDemoPrep
 
 		private static string AddProperties(MatchCollection matches, string result)
 		{
-			foreach (Match match in matches)
+            HashSet<string> groupsAddedSoFar = new HashSet<string>();
+            
+            foreach (Match match in matches)
 				for (int i = 1; i < match.Groups.Count; i++)
 				{
 					if (EvalHelper.IsGroupNameANumber(match, i))
@@ -140,7 +143,12 @@ namespace DeleteRegExDemoPrep
 
 					string groupName = match.Groups[i].Name;
 
-					PropertyType type = EvalHelper.GetPropertyType(match.Groups[i].Value);
+                    if (groupsAddedSoFar.Contains(groupName))
+                        continue;
+
+                    groupsAddedSoFar.Add(groupName);
+
+                    PropertyType type = EvalHelper.GetPropertyType(match.Groups[i].Value);
 					string typeStr = EvalHelper.GetPropertyTypeStr(type);
 					result += $"  public {typeStr}? {groupName} " + "{ get; set; }" + Environment.NewLine;
 				}
@@ -150,7 +158,9 @@ namespace DeleteRegExDemoPrep
 
 		private static string AddInitialization(MatchCollection matches, string result, string instanceName)
 		{
-			foreach (Match match in matches)
+            HashSet<string> groupsAddedSoFar = new HashSet<string>();
+            
+            foreach (Match match in matches)
 				for (int i = 1; i < match.Groups.Count; i++)
 				{
 					if (EvalHelper.IsGroupNameANumber(match, i))
@@ -160,8 +170,12 @@ namespace DeleteRegExDemoPrep
 						continue;
 
 					string groupName = match.Groups[i].Name;
+                    if (groupsAddedSoFar.Contains(groupName))
+                        continue;
 
-					PropertyType type = EvalHelper.GetPropertyType(match.Groups[i].Value);
+                    groupsAddedSoFar.Add(groupName);
+
+                    PropertyType type = EvalHelper.GetPropertyType(match.Groups[i].Value);
 					string typeStr = EvalHelper.GetPropertyTypeStr(type);
 					result += $"    {instanceName}.{groupName} = RegexHelper.GetValue<{typeStr}>(matches, \"{groupName}\");" + Environment.NewLine;
 				}
